@@ -39,22 +39,33 @@ public enum PixelFormat
 	NV12
 }
 
-internal static class Definitions
+public static class Definitions
 {
-	public static string ToExtension(this VideoFormat videoFormat) => videoFormat switch
+	private static Dictionary<VideoFormat, string> extensions = new()
 	{
-		VideoFormat.MP4 => ".mp4",
-		VideoFormat.MKV => ".mkv",
-		VideoFormat.MOV => ".mov",
-		VideoFormat.WMV => ".wmv",
-		VideoFormat.AVI => ".avi",
-		VideoFormat.GIF => ".gif",
-		VideoFormat.WebM => ".webm",
-		VideoFormat.WebP => ".webp",
-		_ => throw new NotImplementedException()
+		{ VideoFormat.MP4, ".mp4" },
+		{ VideoFormat.MKV, ".mkv" },
+		{ VideoFormat.MOV, ".mov" },
+		{ VideoFormat.WMV, ".wmv" },
+		{ VideoFormat.AVI, ".avi" },
+		{ VideoFormat.GIF, ".gif" },
+		{ VideoFormat.WebM, ".webm" },
+		{ VideoFormat.WebP, ".webp" },
 	};
 
-	public static VideoCodec ToDefaultCodec(this VideoFormat videoFormat) => videoFormat switch
+	private static Dictionary<string, VideoFormat> videoFormats = extensions.ToDictionary(pair => pair.Value, pair => pair.Key);
+
+	public static VideoFormat GetVideoFormat(string extension)
+	{
+		return videoFormats[extension.ToLower()];
+	}
+
+	public static string GetExtension(this VideoFormat videoFormat)
+	{
+		return extensions[videoFormat];
+	}
+
+	public static VideoCodec GetDefaultCodec(this VideoFormat videoFormat) => videoFormat switch
 	{
 		VideoFormat.MP4 => VideoCodec.H264,
 		VideoFormat.MKV => VideoCodec.H264,
@@ -67,7 +78,7 @@ internal static class Definitions
 		_ => throw new NotImplementedException()
 	};
 
-	public static string ToDefinition(this VideoCodec videoCodec) => videoCodec switch
+	public static string GetDefinition(this VideoCodec videoCodec) => videoCodec switch
 	{
 		VideoCodec.H264 => "libx264",
 		VideoCodec.H264Nvidia => "h264_nvenc",
@@ -93,7 +104,7 @@ internal static class Definitions
 		_ => throw new NotImplementedException()
 	};
 
-	public static string ToDefinition(this PixelFormat pixelFormat) => pixelFormat switch
+	public static string GetDefinition(this PixelFormat pixelFormat) => pixelFormat switch
 	{
 		PixelFormat.YUV420P => "yuv420p",
 		PixelFormat.NV12 => "nv12",
