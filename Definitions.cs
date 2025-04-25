@@ -54,6 +54,19 @@ internal static class Definitions
 		_ => throw new NotImplementedException()
 	};
 
+	public static VideoCodec ToDefaultCodec(this VideoFormat videoFormat) => videoFormat switch
+	{
+		VideoFormat.MP4 => VideoCodec.H264,
+		VideoFormat.MKV => VideoCodec.H264,
+		VideoFormat.MOV => VideoCodec.H264,
+		VideoFormat.WMV => VideoCodec.WMV2,
+		VideoFormat.AVI => VideoCodec.H264,
+		VideoFormat.GIF => VideoCodec.None,
+		VideoFormat.WebM => VideoCodec.VP9,
+		VideoFormat.WebP => VideoCodec.WebP,
+		_ => throw new NotImplementedException()
+	};
+
 	public static string ToDefinition(this VideoCodec videoCodec) => videoCodec switch
 	{
 		VideoCodec.H264 => "libx264",
