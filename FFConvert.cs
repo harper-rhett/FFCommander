@@ -10,13 +10,15 @@ public class FFConvert : ProcessRunner
 {
 	public FFConvert(string executablePath) : base(executablePath) { }
 
-	public void Convert(
+	public void Run(
 		string inputVideoPath, string outputFolderPath, string outputVideoName,
 		VideoFormat outputVideoFormat = VideoFormat.None,
 		VideoCodec videoCodec = VideoCodec.None,
 		PixelFormat pielFormat = PixelFormat.None
 	)
 	{
-
+		
 	}
+
+	
 }
