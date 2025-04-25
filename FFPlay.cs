@@ -15,7 +15,7 @@ public class FFPlay : ProcessRunner
 		string muteExpression = isMuted ? "-an" : string.Empty;
 		string titleExpression = $"-window_title \"{windowTitle}\"";
 		string sanitizedVideoPath = $"\"{videoPath}\"";
-		string command = $"{muteExpression} {windowTitle} {sanitizedVideoPath}";
+		string command = $"{muteExpression} {titleExpression} {sanitizedVideoPath}";
 
 		RunWithOutput(command, out bool didSucceed);
 		if (!didSucceed) throw new Exception("FFplay playback failed.");
