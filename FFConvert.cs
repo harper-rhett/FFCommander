@@ -14,18 +14,21 @@ public class FFConvert : ProcessRunner
 		string inputMediaPath, string outputFolderPath, string outputMediaName,
 		VideoFormat videoFormat = VideoFormat.None,
 		VideoCodec videoCodec = VideoCodec.None,
-		PixelFormat pixelFormat = PixelFormat.None
+		PixelFormat pixelFormat = PixelFormat.None,
+		AudioCodec audioCodec = AudioCodec.None,
+		bool stripAudio = false
 	)
 	{
 		// Set defaults
 		if (videoFormat == VideoFormat.None) videoFormat = ExtractVideoFormat(inputMediaPath);
-		if (videoCodec == VideoCodec.None) videoCodec = videoFormat.GetDefaultCodec();
+		if (videoCodec == VideoCodec.None) videoCodec = videoFormat.GetDefaultVideoCodec();
 		if (pixelFormat == PixelFormat.None) pixelFormat = videoCodec.GetDefaultPixelFormat();
+		if (audioCodec == AudioCodec.None) audioCodec = videoFormat.GetDefaultAudioCodec();
 	}
 
 	private VideoFormat ExtractVideoFormat(string inputMediaPath)
 	{
 		string extension = Path.GetExtension(inputMediaPath);
-		return Definitions.GetVideoFormat(extension);
+		return VideoFormats.GetFromExtension(extension);
 	}
 }
