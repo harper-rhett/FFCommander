@@ -2,7 +2,7 @@
 
 public class FFRunner
 {
-	public FFMPEG MPEG;
+	public FFConvert Convert;
 	public FFProbe Probe;
 	public FFPlay Play;
 
@@ -10,7 +10,7 @@ public class FFRunner
 	{
 		// Set up FFmpeg
 		string ffmpegPath = Path.Combine(executablesPath, "ffmpeg.exe");
-		MPEG = new(ffmpegPath);
+		Convert = new(ffmpegPath);
 
 		// Set up FFprobe
 		string ffprobePath = Path.Combine(executablesPath, "ffprobe.exe");
@@ -23,7 +23,7 @@ public class FFRunner
 
 	public void Kill()
 	{
-		MPEG.Kill();
+		Convert.Kill();
 		Probe.Kill();
 		Play.Kill();
 	}
