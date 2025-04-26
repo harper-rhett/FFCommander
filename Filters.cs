@@ -33,6 +33,8 @@ public class Filters
 		AddExpression($"split[a][b];[a]palettegen=max_colors=[{maxColors}][p];[b][p]paletteuse");
 	}
 
+	public void Reset() => expressions.Clear();
+
 	public string GetFinalExpression()
 	{
 		return $"-vf \"{string.Join(",", expressions)}\"";
