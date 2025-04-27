@@ -28,7 +28,7 @@ public class FFConvert : ProcessRunner
 		// Loop video
 
 		public Options(
-			string inputMediaPath, string outputFolderPath, string outputMediaName,
+			string inputMediaPath,
 			VideoFormat videoFormat = VideoFormat.None,
 			VideoCodec videoCodec = VideoCodec.None,
 			PixelFormat pixelFormat = PixelFormat.None,
@@ -39,8 +39,6 @@ public class FFConvert : ProcessRunner
 		{
 			// Set paths
 			InputMediaPath = inputMediaPath;
-			OutputFolderPath = outputFolderPath;
-			OutputMediaName = outputMediaName;
 
 			// Check input
 			bool hasVideoFormat = videoFormat != VideoFormat.None;
@@ -64,7 +62,7 @@ public class FFConvert : ProcessRunner
 		}
 	}
 
-	public void Run(Options options)
+	public void Run(Options options, string outputFolderPath, string outputMediaName, out string command, out bool didSucceed)
 	{
 		// Check again for values
 		bool hasVideoCodec = options.VideoCodec != VideoCodec.None;
@@ -81,9 +79,9 @@ public class FFConvert : ProcessRunner
 		string outputExpression = Path.Combine(options.OutputFolderPath, options.OutputMediaName, options.VideoFormat.GetExtension());
 
 		// Run command
-		string command = $"{replaceExpression} {inputExpression} {codecExpression} {pixelFormatExpression} {audioCodecExpression} {filtersExpression} {outputExpression}";
+		command = $"{replaceExpression} {inputExpression} {codecExpression} {pixelFormatExpression} {audioCodecExpression} {filtersExpression} {outputExpression}";
 		command = Regex.Replace(command, @"\s{2,}", " ");
-		RunWithTerminal(command, out bool didSucceed);
+		RunWithTerminal(command, out didSucceed);
 	}
 
 	public bool DoesVideoCodecRun(VideoCodec videoCodec)
