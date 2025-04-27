@@ -62,7 +62,7 @@ public class FFConvert : ProcessRunner
 		}
 	}
 
-	public void Run(Options options, string outputFolderPath, string outputMediaName, out string command, out bool didSucceed)
+	public void Run(Options options, string outputFolderPath, string outputMediaName, out string command, out bool didSucceed, out string outputVideoPath)
 	{
 		// Check again for values
 		bool hasVideoCodec = options.VideoCodec != VideoCodec.None;
@@ -76,10 +76,10 @@ public class FFConvert : ProcessRunner
 		string pixelFormatExpression = hasPixelFormat ? $"-pix_fmt {options.PixelFormat.GetDefinition()}" : string.Empty;
 		string audioCodecExpression = hasAudioCodec ? $"-c:a {options.AudioCodec.GetDefinition()}" : string.Empty;
 		string filtersExpression = options.Filters.GetFinalExpression();
-		string outputExpression = Path.Combine(options.OutputFolderPath, options.OutputMediaName, options.VideoFormat.GetExtension());
+		outputVideoPath = Path.Combine(options.OutputFolderPath, options.OutputMediaName, options.VideoFormat.GetExtension());
 
 		// Run command
-		command = $"{replaceExpression} {inputExpression} {codecExpression} {pixelFormatExpression} {audioCodecExpression} {filtersExpression} {outputExpression}";
+		command = $"{replaceExpression} {inputExpression} {codecExpression} {pixelFormatExpression} {audioCodecExpression} {filtersExpression} {outputVideoPath}";
 		command = Regex.Replace(command, @"\s{2,}", " ");
 		RunWithTerminal(command, out didSucceed);
 	}
