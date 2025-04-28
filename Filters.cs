@@ -14,7 +14,7 @@ public class Filters
 
 	public void AddScale(int width, int height, FilterFlags.Resample resample = FilterFlags.Resample.Bilinear)
 	{
-		AddExpression($"scale={width}:{height}:{resample}");
+		AddExpression($"scale={width}:{height}:{resample.GetDefinition()}");
 	}
 
 	public void AddFrameRate(double frameRate)

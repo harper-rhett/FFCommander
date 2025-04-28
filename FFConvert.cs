@@ -14,8 +14,6 @@ public class FFConvert : ProcessRunner
 	public class Options
 	{
 		public string InputMediaPath;
-		public string OutputFolderPath;
-		public string OutputMediaName;
 		public VideoFormat VideoFormat;
 		public VideoCodec VideoCodec;
 		public PixelFormat PixelFormat;
@@ -62,7 +60,7 @@ public class FFConvert : ProcessRunner
 		}
 	}
 
-	public void Run(Options options, string outputFolderPath, string outputMediaName, out string command, out bool didSucceed, out string outputVideoPath)
+	public void Run(Options options, string outputFolderPath, string outputMediaName, out string command, out bool didSucceed, out string outputMediaPath)
 	{
 		// Check again for values
 		bool hasVideoCodec = options.VideoCodec != VideoCodec.None;
@@ -71,15 +69,16 @@ public class FFConvert : ProcessRunner
 
 		// Build command
 		const string replaceExpression = $"-y";
-		string inputExpression = $"-i {options.InputMediaPath}";
+		string inputExpression = $"-i \"{options.InputMediaPath}\"";
 		string codecExpression = hasVideoCodec ? $"-c:v {options.VideoCodec.GetDefinition()}" : string.Empty;
 		string pixelFormatExpression = hasPixelFormat ? $"-pix_fmt {options.PixelFormat.GetDefinition()}" : string.Empty;
 		string audioCodecExpression = hasAudioCodec ? $"-c:a {options.AudioCodec.GetDefinition()}" : string.Empty;
 		string filtersExpression = options.Filters.GetFinalExpression();
-		outputVideoPath = Path.Combine(options.OutputFolderPath, options.OutputMediaName, options.VideoFormat.GetExtension());
+		outputMediaPath = Path.ChangeExtension(Path.Combine(outputFolderPath, outputMediaName), options.VideoFormat.GetExtension());
+		string outputExpression = $"\"{outputMediaPath}\"";
 
 		// Run command
-		command = $"{replaceExpression} {inputExpression} {codecExpression} {pixelFormatExpression} {audioCodecExpression} {filtersExpression} {outputVideoPath}";
+		command = $"{replaceExpression} {inputExpression} {codecExpression} {pixelFormatExpression} {audioCodecExpression} {filtersExpression} {outputExpression}";
 		command = Regex.Replace(command, @"\s{2,}", " ");
 		RunWithTerminal(command, out didSucceed);
 	}
@@ -89,10 +88,6 @@ public class FFConvert : ProcessRunner
 		// Test codec
 		string codecDefinition = videoCodec.GetDefinition();
 		string output = RunWithError($"-f lavfi -i testsrc -t 0.25 -c:v {codecDefinition} -f null -", out bool didSucceed);
-		if (!didSucceed) throw new Exception("Codec test failed.");
-
-		// Test codec output
-		bool doesRun = !output.Contains("error while opening encoder", StringComparison.OrdinalIgnoreCase);
-		return doesRun;
+		return didSucceed;
 	}
 }
