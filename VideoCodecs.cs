@@ -44,6 +44,6 @@ public static class VideoCodecs
 		VideoCodec.VP9 => PixelFormat.YUV420P,
 		VideoCodec.VP9Intel => PixelFormat.NV12,
 		VideoCodec.WebP => PixelFormat.YUV420P,
-		_ => throw new NotImplementedException()
+		_ => PixelFormat.None,
 	};
 }

@@ -18,12 +18,11 @@ public class FFConvert : ProcessRunner
 		public VideoCodec VideoCodec;
 		public PixelFormat PixelFormat;
 		public AudioCodec AudioCodec;
+		public Loop Loop;
 		public Filters Filters;
-		public string CustomExpressions;
 
 		// Things to add:
 		// Strip audio
-		// Loop video
 
 		public Options(
 			string inputMediaPath,
@@ -31,8 +30,8 @@ public class FFConvert : ProcessRunner
 			VideoCodec videoCodec = VideoCodec.None,
 			PixelFormat pixelFormat = PixelFormat.None,
 			AudioCodec audioCodec = AudioCodec.None,
-			Filters filters = null,
-			string customExpressions = ""
+			Loop loop = Loop.Ignore,
+			Filters filters = null
 		)
 		{
 			// Set paths
@@ -67,19 +66,20 @@ public class FFConvert : ProcessRunner
 		bool hasPixelFormat = options.PixelFormat != PixelFormat.None;
 		bool hasAudioCodec = options.AudioCodec != AudioCodec.None;
 
-		// Build command
-		const string replaceExpression = $"-y";
-		string inputExpression = $"-i \"{options.InputMediaPath}\"";
-		string codecExpression = hasVideoCodec ? $"-c:v {options.VideoCodec.GetDefinition()}" : string.Empty;
-		string pixelFormatExpression = hasPixelFormat ? $"-pix_fmt {options.PixelFormat.GetDefinition()}" : string.Empty;
-		string audioCodecExpression = hasAudioCodec ? $"-c:a {options.AudioCodec.GetDefinition()}" : string.Empty;
-		string filtersExpression = options.Filters.GetFinalExpression();
+		// Build base command
+		List<string> expressions = new();
+		expressions.Add("-y"); // replace input
+		expressions.Add($"-i \"{options.InputMediaPath}\""); // input path
+		if (hasVideoCodec) expressions.Add($"-c:v {options.VideoCodec.GetDefinition()}"); // video codec
+		if (hasPixelFormat) expressions.Add($"-pix_fmt {options.PixelFormat.GetDefinition()}"); // pixel format
+		if (hasAudioCodec) expressions.Add($"-c:a {options.AudioCodec.GetDefinition()}"); // audio codec
+		expressions.Add(options.Filters.GetFinalExpression()); // filters
 		outputMediaPath = Path.ChangeExtension(Path.Combine(outputFolderPath, outputMediaName), options.VideoFormat.GetExtension());
-		string outputExpression = $"\"{outputMediaPath}\"";
+		expressions.Add(options.Loop.GetCommand()); // looping
+		expressions.Add($"\"{outputMediaPath}\""); // output
 
 		// Run command
-		command = $"{replaceExpression} {inputExpression} {codecExpression} {pixelFormatExpression} {audioCodecExpression} {filtersExpression} {outputExpression}";
-		command = Regex.Replace(command, @"\s{2,}", " ");
+		command = string.Join(" ", expressions);
 		RunWithTerminal(command, out didSucceed);
 	}
 

@@ -55,7 +55,7 @@ public static class VideoFormats
 		VideoFormat.GIF => VideoCodec.None,
 		VideoFormat.WebM => VideoCodec.VP9,
 		VideoFormat.WebP => VideoCodec.WebP,
-		_ => throw new NotImplementedException()
+		_ => VideoCodec.None,
 	};
 
 	public static AudioCodec GetDefaultAudioCodec(this VideoFormat videoFormat) => videoFormat switch

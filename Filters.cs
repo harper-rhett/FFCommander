@@ -30,7 +30,7 @@ public class Filters
 
 	public void AddPaletteLimit(int maxColors)
 	{
-		AddExpression($"split[a][b];[a]palettegen=max_colors=[{maxColors}][p];[b][p]paletteuse");
+		AddExpression($"split[a][b];[a]palettegen=max_colors={maxColors}[p];[b][p]paletteuse");
 	}
 
 	public void Reset() => expressions.Clear();
