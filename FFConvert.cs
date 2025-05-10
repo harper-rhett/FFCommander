@@ -62,21 +62,6 @@ public class FFConvert : ProcessRunner
 			get { return $"-y -i \"{InputMediaPath}\""; }
 		}
 
-		public string VideoCodecExpression
-		{
-			get { return $"-c:v {VideoCodec.GetDefinition()}"; }
-		}
-
-		public string PixelFormatExpression
-		{
-			get { return $"-pix_fmt {PixelFormat.GetDefinition()}"; }
-		}
-
-		public string AudioCodecExpression
-		{
-			get { return $"-c:a {AudioCodec.GetDefinition()}"; }
-		}
-
 		public string AudioChannelsExpression
 		{
 			get
@@ -97,12 +82,12 @@ public class FFConvert : ProcessRunner
 		// Build base command
 		List<string> expressions = new();
 		expressions.Add(options.InputExpression);
-		if (hasVideoCodec) expressions.Add(options.VideoCodecExpression);
-		if (hasPixelFormat) expressions.Add(options.PixelFormatExpression);
-		if (hasAudioCodec) expressions.Add(options.AudioCodecExpression);
+		if (hasVideoCodec) expressions.Add(options.VideoCodec.GetExpression());
+		if (hasPixelFormat) expressions.Add(options.PixelFormat.GetExpression());
+		if (hasAudioCodec) expressions.Add(options.AudioCodec.GetExpression());
 		expressions.Add(options.Filters.FinalExpression);
 		expressions.Add(options.AudioChannelsExpression);
-		expressions.Add(options.Loop.GetCommand()); // looping
+		expressions.Add(options.Loop.GetExpression()); // looping
 
 		// Build output path expression
 		outputMediaPath = Path.ChangeExtension(Path.Combine(outputFolderPath, outputMediaName), options.VideoFormat.GetExtension());

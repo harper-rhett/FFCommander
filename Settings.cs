@@ -15,7 +15,7 @@ public enum Loop
 
 public static class Settings
 {
-	public static string GetCommand(this Loop loop) => loop switch
+	public static string GetExpression(this Loop loop) => loop switch
 	{
 		Loop.Ignore => string.Empty,
 		Loop.Once => "-loop -1",

@@ -25,4 +25,9 @@ public static class AudioCodecs
 		AudioCodec.MP3 => "mp3",
 		_ => throw new NotImplementedException()
 	};
+
+	public static string GetExpression(this AudioCodec audioCodec)
+	{
+		return $"-c:a {audioCodec.GetDefinition()}";
+	}
 }

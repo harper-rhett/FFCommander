@@ -34,6 +34,11 @@ public static class VideoCodecs
 		_ => throw new NotImplementedException()
 	};
 
+	public static string GetExpression(this VideoCodec videoCodec)
+	{
+		return $"-c:v {videoCodec.GetDefinition()}";
+	}
+
 	public static PixelFormat GetDefaultPixelFormat(this VideoCodec videoCodec) => videoCodec switch
 	{
 		VideoCodec.H264 => PixelFormat.YUV420P,

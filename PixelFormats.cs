@@ -21,4 +21,9 @@ public static class PixelFormats
 		PixelFormat.NV12 => "nv12",
 		_ => throw new NotImplementedException()
 	};
+
+	public static string GetExpression(this PixelFormat pixelFormat)
+	{
+		return $"-pix_fmt {pixelFormat.GetDefinition()}";
+	}
 }
