@@ -18,11 +18,9 @@ public class FFConvert : ProcessRunner
 		public VideoCodec VideoCodec;
 		public PixelFormat PixelFormat;
 		public AudioCodec AudioCodec;
+		public int AudioChannels;
 		public Loop Loop;
 		public Filters Filters;
-
-		// Things to add:
-		// Strip audio
 
 		public Options(
 			string inputMediaPath,
@@ -30,6 +28,7 @@ public class FFConvert : ProcessRunner
 			VideoCodec videoCodec = VideoCodec.None,
 			PixelFormat pixelFormat = PixelFormat.None,
 			AudioCodec audioCodec = AudioCodec.None,
+			int audioChannels = 2,
 			Loop loop = Loop.Ignore,
 			Filters filters = null
 		)
@@ -57,6 +56,35 @@ public class FFConvert : ProcessRunner
 			string extension = Path.GetExtension(inputMediaPath);
 			return VideoFormats.GetFromExtension(extension);
 		}
+
+		public string InputExpression
+		{
+			get { return $"-y -i \"{InputMediaPath}\""; }
+		}
+
+		public string VideoCodecExpression
+		{
+			get { return $"-c:v {VideoCodec.GetDefinition()}"; }
+		}
+
+		public string PixelFormatExpression
+		{
+			get { return $"-pix_fmt {PixelFormat.GetDefinition()}"; }
+		}
+
+		public string AudioCodecExpression
+		{
+			get { return $"-c:a {AudioCodec.GetDefinition()}"; }
+		}
+
+		public string AudioChannelsExpression
+		{
+			get
+			{
+				if (AudioChannels == 0) return "-an";
+				else return $"-ac {AudioChannels}"; // audio channels
+			}
+		}
 	}
 
 	public void Run(Options options, string outputFolderPath, string outputMediaName, out string command, out bool didSucceed, out string outputMediaPath)
@@ -68,14 +96,16 @@ public class FFConvert : ProcessRunner
 
 		// Build base command
 		List<string> expressions = new();
-		expressions.Add("-y"); // replace input
-		expressions.Add($"-i \"{options.InputMediaPath}\""); // input path
-		if (hasVideoCodec) expressions.Add($"-c:v {options.VideoCodec.GetDefinition()}"); // video codec
-		if (hasPixelFormat) expressions.Add($"-pix_fmt {options.PixelFormat.GetDefinition()}"); // pixel format
-		if (hasAudioCodec) expressions.Add($"-c:a {options.AudioCodec.GetDefinition()}"); // audio codec
-		expressions.Add(options.Filters.GetFinalExpression()); // filters
-		outputMediaPath = Path.ChangeExtension(Path.Combine(outputFolderPath, outputMediaName), options.VideoFormat.GetExtension());
+		expressions.Add(options.InputExpression);
+		if (hasVideoCodec) expressions.Add(options.VideoCodecExpression);
+		if (hasPixelFormat) expressions.Add(options.PixelFormatExpression);
+		if (hasAudioCodec) expressions.Add(options.AudioCodecExpression);
+		expressions.Add(options.Filters.FinalExpression);
+		expressions.Add(options.AudioChannelsExpression);
 		expressions.Add(options.Loop.GetCommand()); // looping
+
+		// Build output path expression
+		outputMediaPath = Path.ChangeExtension(Path.Combine(outputFolderPath, outputMediaName), options.VideoFormat.GetExtension());
 		expressions.Add($"\"{outputMediaPath}\""); // output
 
 		// Run command

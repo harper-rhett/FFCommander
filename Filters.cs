@@ -35,9 +35,9 @@ public class Filters
 
 	public void Reset() => expressions.Clear();
 
-	public string GetFinalExpression()
+	public string FinalExpression
 	{
-		return $"-vf \"{string.Join(",", expressions)}\"";
+		get { return $"-vf \"{string.Join(",", expressions)}\""; }
 	}
 }
 
