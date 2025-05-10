@@ -18,7 +18,8 @@ public class FFConvert : ProcessRunner
 		public VideoCodec VideoCodec;
 		public PixelFormat PixelFormat;
 		public AudioCodec AudioCodec;
-		public AudioChannels audioChannels;
+		public VideoCompression VideoCompression;
+		public AudioChannels AudioChannels;
 		public Loop Loop;
 		public Filters Filters;
 
@@ -28,6 +29,7 @@ public class FFConvert : ProcessRunner
 			VideoCodec videoCodec = VideoCodec.None,
 			PixelFormat pixelFormat = PixelFormat.None,
 			AudioCodec audioCodec = AudioCodec.None,
+			VideoCompression videoCompression = null,
 			AudioChannels audioChannels = null,
 			Loop loop = Loop.Ignore,
 			Filters filters = null
@@ -49,7 +51,7 @@ public class FFConvert : ProcessRunner
 			VideoCodec = hasVideoCodec ? videoCodec : VideoFormat.GetDefaultVideoCodec();
 			PixelFormat = hasPixelFormat ? pixelFormat : VideoCodec.GetDefaultPixelFormat();
 			AudioCodec = hasAudioCodec ? audioCodec : VideoFormat.GetDefaultAudioCodec();
-			audioChannels = hasAudioChannels ? audioChannels : new(2);
+			AudioChannels = hasAudioChannels ? audioChannels : new(2);
 			Filters = hasFilters ? filters : new();
 		}
 
@@ -71,15 +73,17 @@ public class FFConvert : ProcessRunner
 		bool hasVideoCodec = options.VideoCodec != VideoCodec.None;
 		bool hasPixelFormat = options.PixelFormat != PixelFormat.None;
 		bool hasAudioCodec = options.AudioCodec != AudioCodec.None;
+		bool hasVideoCompression = options.VideoCompression != null;
 
 		// Build base command
 		List<string> expressions = new();
 		expressions.Add(options.InputExpression);
 		if (hasVideoCodec) expressions.Add(options.VideoCodec.GetExpression());
+		if (hasVideoCompression) expressions.Add(options.VideoCompression.GetExpression(options.VideoCodec));
 		if (hasPixelFormat) expressions.Add(options.PixelFormat.GetExpression());
 		if (hasAudioCodec) expressions.Add(options.AudioCodec.GetExpression());
+		expressions.Add(options.AudioChannels.Expression);
 		expressions.Add(options.Filters.FinalExpression);
-		expressions.Add(options.audioChannels.Expression);
 		expressions.Add(options.Loop.GetExpression());
 
 		// Build output path expression

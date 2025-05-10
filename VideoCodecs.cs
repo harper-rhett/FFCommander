@@ -34,9 +34,22 @@ public static class VideoCodecs
 		_ => throw new NotImplementedException()
 	};
 
+	public static string GetSettings(this VideoCodec videoCodec) => videoCodec switch
+	{
+		VideoCodec.H264 => string.Empty,
+		VideoCodec.H264Nvidia => string.Empty,
+		VideoCodec.H264Intel => string.Empty,
+		VideoCodec.H264AMD => string.Empty,
+		VideoCodec.WMV2 => string.Empty,
+		VideoCodec.VP9 => "-cpu-used 5 -b:v 0",
+		VideoCodec.VP9Intel => string.Empty,
+		VideoCodec.WebP => string.Empty,
+		_ => throw new NotImplementedException()
+	};
+
 	public static string GetExpression(this VideoCodec videoCodec)
 	{
-		return $"-c:v {videoCodec.GetDefinition()}";
+		return $"-c:v {videoCodec.GetDefinition()} {videoCodec.GetSettings()}";
 	}
 
 	public static PixelFormat GetDefaultPixelFormat(this VideoCodec videoCodec) => videoCodec switch
