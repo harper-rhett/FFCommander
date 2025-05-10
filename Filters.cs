@@ -25,7 +25,7 @@ public class Filters
 	public void AddSubtitles(string subtitlesPath)
 	{
 		string sanitizedPath = @$"{subtitlesPath.Replace("\\", "/").Replace(":", "\\:")}";
-		AddExpression($"subtitles={sanitizedPath}");
+		AddExpression($"subtitles='{sanitizedPath}'");
 	}
 
 	public void AddPaletteLimit(int maxColors)
