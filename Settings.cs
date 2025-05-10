@@ -13,6 +13,25 @@ public enum Loop
     Infinite
 }
 
+public class AudioChannels
+{
+	private int channels;
+
+	public AudioChannels(int channels)
+	{
+		this.channels = channels;
+	}
+
+	public string Expression
+	{
+		get
+		{
+			if (channels == 0) return "-an";
+			else return $"-ac {channels}";
+		}
+	}
+}
+
 public static class Settings
 {
 	public static string GetExpression(this Loop loop) => loop switch

@@ -18,7 +18,7 @@ public class FFConvert : ProcessRunner
 		public VideoCodec VideoCodec;
 		public PixelFormat PixelFormat;
 		public AudioCodec AudioCodec;
-		public int AudioChannels;
+		public AudioChannels audioChannels;
 		public Loop Loop;
 		public Filters Filters;
 
@@ -28,7 +28,7 @@ public class FFConvert : ProcessRunner
 			VideoCodec videoCodec = VideoCodec.None,
 			PixelFormat pixelFormat = PixelFormat.None,
 			AudioCodec audioCodec = AudioCodec.None,
-			int audioChannels = 2,
+			AudioChannels audioChannels = null,
 			Loop loop = Loop.Ignore,
 			Filters filters = null
 		)
@@ -41,6 +41,7 @@ public class FFConvert : ProcessRunner
 			bool hasVideoCodec = videoCodec != VideoCodec.None;
 			bool hasPixelFormat = pixelFormat != PixelFormat.None;
 			bool hasAudioCodec = audioCodec != AudioCodec.None;
+			bool hasAudioChannels = audioChannels != null;
 			bool hasFilters = filters != null;
 
 			// Set defaults
@@ -48,6 +49,7 @@ public class FFConvert : ProcessRunner
 			VideoCodec = hasVideoCodec ? videoCodec : VideoFormat.GetDefaultVideoCodec();
 			PixelFormat = hasPixelFormat ? pixelFormat : VideoCodec.GetDefaultPixelFormat();
 			AudioCodec = hasAudioCodec ? audioCodec : VideoFormat.GetDefaultAudioCodec();
+			audioChannels = hasAudioChannels ? audioChannels : new(2);
 			Filters = hasFilters ? filters : new();
 		}
 
@@ -60,15 +62,6 @@ public class FFConvert : ProcessRunner
 		public string InputExpression
 		{
 			get { return $"-y -i \"{InputMediaPath}\""; }
-		}
-
-		public string AudioChannelsExpression
-		{
-			get
-			{
-				if (AudioChannels == 0) return "-an";
-				else return $"-ac {AudioChannels}"; // audio channels
-			}
 		}
 	}
 
@@ -86,8 +79,8 @@ public class FFConvert : ProcessRunner
 		if (hasPixelFormat) expressions.Add(options.PixelFormat.GetExpression());
 		if (hasAudioCodec) expressions.Add(options.AudioCodec.GetExpression());
 		expressions.Add(options.Filters.FinalExpression);
-		expressions.Add(options.AudioChannelsExpression);
-		expressions.Add(options.Loop.GetExpression()); // looping
+		expressions.Add(options.audioChannels.Expression);
+		expressions.Add(options.Loop.GetExpression());
 
 		// Build output path expression
 		outputMediaPath = Path.ChangeExtension(Path.Combine(outputFolderPath, outputMediaName), options.VideoFormat.GetExtension());
