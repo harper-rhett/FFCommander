@@ -1,4 +1,4 @@
-FFCommander is a tool which interfaces with FFmpeg, FFplay, and FFprobe via the command line.
+FFCommander is a tool which interfaces with FFmpeg, FFprobe, and FFplay through its command line.
 
 It can be used for sending direct commands to FFmpeg:
 ```csharp
