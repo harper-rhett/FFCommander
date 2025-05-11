@@ -35,4 +35,5 @@ FFRunner ffRunner = new(ffPath);
 
 Though it is missing lots of features!
 It was primarily created for my own purposes in supporting [Convertophile](https://harper-rhett.itch.io/convertophile).
+So, I add features when I need them.
 If you'd like to use it yourself beyond the features I have implemented, give it a fork! It's relatively plug and play.
