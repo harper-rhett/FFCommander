@@ -1,6 +1,6 @@
 FFCommander is a tool which interfaces with FFmpeg, FFprobe, and FFplay through its command line.
 
-It can be used for sending direct commands to FFmpeg:
+It can be used for sending direct commands:
 ```csharp
 FFRunner.Convert.RunWithTerminal("ffmpeg -i input.mp4 -vf scale=640:360 output.mp4", out bool didSucceed);
 ```
@@ -13,9 +13,15 @@ FFConvert.Options options = new(
 	videoCompression: new(0.5)
 );
 FFRunner.Convert.Run(
-  options, "videos-folder", "output video",
+  options, outputFolderPath, outputVideoName,
   out string command, out bool didSucceed, out string outputMediaPath
 );
+```
+```csharp
+FFRunner.Play.Video(videoPath, windowTitle: "My Video", isMuted: true);
+```
+```csharp
+int width = FFRunner.Probe.Width(videoPath);
 ```
 
 And is super easy to set up:
