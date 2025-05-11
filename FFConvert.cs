@@ -35,24 +35,32 @@ public class FFConvert : ProcessRunner
 			Filters filters = null
 		)
 		{
-			// Set paths
 			InputMediaPath = inputMediaPath;
+			VideoFormat = videoFormat;
+			VideoCodec = videoCodec;
+			PixelFormat = pixelFormat;
+			AudioCodec = audioCodec;
+			VideoCompression = videoCompression;
+			AudioChannels = audioChannels;
+			Loop = loop;
+			if (filters == null) Filters = new();
+		}
 
-			// Check input
-			bool hasVideoFormat = videoFormat != VideoFormat.None;
-			bool hasVideoCodec = videoCodec != VideoCodec.None;
-			bool hasPixelFormat = pixelFormat != PixelFormat.None;
-			bool hasAudioCodec = audioCodec != AudioCodec.None;
-			bool hasAudioChannels = audioChannels != null;
-			bool hasFilters = filters != null;
+		public void InitializeEmpty()
+		{
+			// Check settings
+			bool hasVideoFormat = VideoFormat != VideoFormat.None;
+			bool hasVideoCodec = VideoCodec != VideoCodec.None;
+			bool hasPixelFormat = PixelFormat != PixelFormat.None;
+			bool hasAudioCodec = AudioCodec != AudioCodec.None;
+			bool hasAudioChannels = AudioChannels != null;
 
 			// Set defaults
-			VideoFormat = hasVideoFormat ? videoFormat : ExtractVideoFormat(inputMediaPath);
-			VideoCodec = hasVideoCodec ? videoCodec : VideoFormat.GetDefaultVideoCodec();
-			PixelFormat = hasPixelFormat ? pixelFormat : VideoCodec.GetDefaultPixelFormat();
-			AudioCodec = hasAudioCodec ? audioCodec : VideoFormat.GetDefaultAudioCodec();
-			AudioChannels = hasAudioChannels ? audioChannels : new(2);
-			Filters = hasFilters ? filters : new();
+			if (!hasVideoFormat) VideoFormat = ExtractVideoFormat(InputMediaPath);
+			if (!hasVideoCodec) VideoCodec = VideoFormat.GetDefaultVideoCodec();
+			if (!hasPixelFormat) PixelFormat = VideoCodec.GetDefaultPixelFormat();
+			if (!hasAudioCodec) AudioCodec = VideoFormat.GetDefaultAudioCodec();
+			if (!hasAudioChannels) AudioChannels = new(2);
 		}
 
 		private VideoFormat ExtractVideoFormat(string inputMediaPath)
@@ -70,6 +78,7 @@ public class FFConvert : ProcessRunner
 	public void Run(Options options, string outputFolderPath, string outputMediaName, out string command, out bool didSucceed, out string outputMediaPath)
 	{
 		// Check again for values
+		options.InitializeEmpty();
 		bool hasVideoCodec = options.VideoCodec != VideoCodec.None;
 		bool hasPixelFormat = options.PixelFormat != PixelFormat.None;
 		bool hasAudioCodec = options.AudioCodec != AudioCodec.None;
@@ -88,7 +97,7 @@ public class FFConvert : ProcessRunner
 
 		// Build output path expression
 		outputMediaPath = Path.ChangeExtension(Path.Combine(outputFolderPath, outputMediaName), options.VideoFormat.GetExtension());
-		expressions.Add($"\"{outputMediaPath}\""); // output
+		expressions.Add($"\"{outputMediaPath}\"");
 
 		// Run command
 		command = string.Join(" ", expressions);
