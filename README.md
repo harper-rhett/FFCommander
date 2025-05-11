@@ -14,7 +14,7 @@ FFConvert.Options options = new(
 );
 FFRunner.Convert.Run(
   options, outputFolderPath, outputVideoName,
-  out string command, out bool didSucceed, out string outputMediaPath
+  out string command, out bool didSucceed, out string outputVideoPath
 );
 ```
 ```csharp
