@@ -8,7 +8,7 @@ FFRunner.Convert.RunWithTerminal("ffmpeg -i input.mp4 -vf scale=640:360 output.m
 Or with some limited pre-built functionality:
 ```csharp
 FFConvert.Options options = new(
-	"input.mp4",
+	inputVideoPath,
 	VideoFormat.MOV, VideoCodec.H264,
 	videoCompression: new(0.5)
 );
