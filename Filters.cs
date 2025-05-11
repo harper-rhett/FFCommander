@@ -12,7 +12,7 @@ public class Filters
 
 	public void AddExpression(string expression) => expressions.Add(expression);
 
-	public void AddScale(int width, int height, FilterFlags.Resample resample = FilterFlags.Resample.Bilinear)
+	public void AddScale(int width, int height, FilterFlags.Resample resample = FilterFlags.Resample.Lanczos)
 	{
 		AddExpression($"scale={width}:{height}:{resample.GetDefinition()}");
 	}
