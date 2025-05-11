@@ -18,10 +18,10 @@ FFRunner.Convert.Run(
 );
 ```
 ```csharp
-FFRunner.Play.Video(videoPath, windowTitle: "My Video", isMuted: true);
+int width = FFRunner.Probe.Width(videoPath);
 ```
 ```csharp
-int width = FFRunner.Probe.Width(videoPath);
+FFRunner.Play.Video(videoPath, windowTitle: "My Video", isMuted: true);
 ```
 
 And is super easy to set up:
