@@ -22,6 +22,7 @@ public class ProcessRunner
 		// Create process info
 		ProcessStartInfo processInfo = new()
 		{
+			WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory,
 			FileName = executablePath,
 			RedirectStandardOutput = true,
 			RedirectStandardError = false,
@@ -53,6 +54,7 @@ public class ProcessRunner
 		// Create process info
 		ProcessStartInfo processInfo = new()
 		{
+			WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory,
 			FileName = executablePath,
 			RedirectStandardOutput = false,
 			RedirectStandardError = true,
@@ -84,6 +86,7 @@ public class ProcessRunner
 		// Create process info
 		ProcessStartInfo processInfo = new()
 		{
+			WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory,
 			FileName = executablePath,
 			RedirectStandardOutput = false,
 			RedirectStandardError = false,
